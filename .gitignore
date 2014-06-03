@@ -1,0 +1,11 @@
+# Project directories and files
+vendor/*
+
+# IDE
+.idea
+.nbproject
+
+# OS
+.DS_Store
+Thumbs.db
+
