@@ -20,8 +20,5 @@
         "psr-0": {
             "Epson\\": ["src"]
         }
-    },
-    "branch-alias": {
-        "dev-master": "1.0.x-dev"
     }
 }
