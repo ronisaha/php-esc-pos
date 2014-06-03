@@ -21,8 +21,8 @@ $printer -> cut();
 Reference
 ==========
 
-*[FAQ about ESC/POS® from Epson](http://content.epson.de/fileadmin/content/files/RSD/downloads/escpos.pdf)
-*[TM-T70 supported commands](https://reference.epson-biz.com/modules/ref_escpos/index.php?content_id=80)
+* [FAQ about ESC/POS® from Epson](http://content.epson.de/fileadmin/content/files/RSD/downloads/escpos.pdf)   
+* [TM-T70 supported commands](https://reference.epson-biz.com/modules/ref_escpos/index.php?content_id=80)
 
 
 
