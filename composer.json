@@ -3,7 +3,7 @@
     "type": "library",
     "homepage": "https://github.com/xiidea/php-esc-pos/",
     "description": "EPSON ESC/POS printer command generator library",
-    "keywords": ["ESC/POS", "Thermal printer", "TM-T70", "Epson"],
+    "keywords": ["ESC-POS", "Thermal printer", "TM-T70", "Epson"],
     "license": "MIT",
     "authors": [
         {
@@ -20,5 +20,8 @@
         "psr-0": {
             "Epson\\": ["src"]
         }
+    },
+    "branch-alias": {
+        "dev-master": "1.0.x-dev"
     }
 }
