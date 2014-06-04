@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AbstractDevice Class
+ * Abstract Device Class
  *
  * The abstract base class for device
  *
@@ -15,14 +15,14 @@ namespace Epson\Devices;
 
 use Epson\EscPos;
 
-abstract class AbstractDevice
+abstract class Device
 {
     abstract public function close();
     abstract public function write($data);
 
     public function initialize()
     {
-        $this->write(EscPos::ESC . "@");
+        $this->write(EscPos::CTL_ESC . "@");
     }
 
     public function __destruct()

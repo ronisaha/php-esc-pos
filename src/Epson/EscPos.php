@@ -12,11 +12,15 @@ namespace Epson;
 
 class EscPos
 {
-    /* ASCII codes */
+    /* Feed Control */
     const NUL = "\x00";
-    const LF = "\x0a";
-    const ESC = "\x1b";
-    const GS = "\x1d";
+    const CTL_ESC = "\x1b";
+    const CTL_LF = "\x0a";                # Print and line feed
+    const CTL_GS = "\x1d";
+    const CTL_FF    = "\x0c";             # Form feed
+    const CTL_CR    = "\x0d";             # Carriage return
+    const CTL_HT    = "\x09";             # Horizontal tab
+    const CTL_VT    = "\x0b";             # Vertical tab
 
     /* Print mode constants */
     const MODE_FONT_A = 0;
@@ -36,9 +40,9 @@ class EscPos
     const JUSTIFY_CENTER = 1;
     const JUSTIFY_RIGHT = 2;
 
-    /* Cut types */
-    const CUT_FULL = 65;
-    const CUT_PARTIAL = 66;
+    /* Paper Cut types */
+    const PAPER_CUT_FULL = 65;
+    const PAPER_CUT_PARTIAL = 66;
 
     /* Barcode types */
     const BARCODE_UPCA = 0;
@@ -47,5 +51,5 @@ class EscPos
     const BARCODE_JAN8 = 3;
     const BARCODE_CODE39 = 4;
     const BARCODE_ITF = 5;
-    const BARCODE_CODABAR = 6;
+    const BARCODE_NW7 = 6;
 } 

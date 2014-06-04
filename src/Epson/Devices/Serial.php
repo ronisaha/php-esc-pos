@@ -13,7 +13,7 @@
 
 namespace Epson\Devices;
 
-class Serial extends AbstractDevice
+class Serial extends Device
 {
     protected $resource;
 

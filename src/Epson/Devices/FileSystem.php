@@ -13,7 +13,7 @@
 
 namespace Epson\Devices;
 
-class FileSystem extends  AbstractDevice
+class FileSystem extends  Device
 {
     protected $resource;
 

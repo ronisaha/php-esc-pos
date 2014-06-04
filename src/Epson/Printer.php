@@ -12,17 +12,17 @@
 
 namespace Epson;
 
-use Epson\Devices\AbstractDevice;
+use Epson\Devices\Device;
 use Epson\Devices\FileSystem;
 
 class Printer
 {
     /**
-     * @var AbstractDevice
+     * @var Device
      */
     protected $device;
 
-    public function __construct(AbstractDevice $device = null)
+    public function __construct(Device $device = null)
     {
         $this->device = ($device == null) ? new FileSystem() : $device;
 
@@ -47,9 +47,9 @@ class Printer
     function feed($lines = 1)
     {
         if ($lines <= 1) {
-            $this->device->write(EscPos::LF);
+            $this->device->write(EscPos::CTL_LF);
         } else {
-            $this->device->write(EscPos::ESC . "d" . chr($lines));
+            $this->device->write(EscPos::CTL_ESC . "d" . chr($lines));
         }
     }
 
@@ -68,7 +68,7 @@ class Printer
      */
     function setPrintMode($mode = EscPos::NUL)
     {
-        $this->device->write(EscPos::ESC . "!" . chr($mode));
+        $this->device->write(EscPos::CTL_ESC . "!" . chr($mode));
     }
 
     /**
@@ -78,7 +78,7 @@ class Printer
      */
     function setUnderline($underline = 1)
     {
-        $this->device->write(EscPos::ESC . "-" . chr($underline));
+        $this->device->write(EscPos::CTL_ESC . "-" . chr($underline));
     }
 
     /**
@@ -88,7 +88,7 @@ class Printer
      */
     function setEmphasis($on = true)
     {
-        $this->device->write(EscPos::ESC . "E" . ($on ? chr(1) : chr(0)));
+        $this->device->write(EscPos::CTL_ESC . "E" . ($on ? chr(1) : chr(0)));
     }
 
     /**
@@ -98,7 +98,7 @@ class Printer
      */
     function setDoubleStrike($on)
     {
-        $this->device->write(EscPos::ESC . "G" . ($on ? chr(1) : chr(0)));
+        $this->device->write(EscPos::CTL_ESC . "G" . ($on ? chr(1) : chr(0)));
     }
 
     /**
@@ -109,7 +109,7 @@ class Printer
      */
     function setFont($font)
     {
-        $this->device->write(EscPos::ESC . "M" . chr($font));
+        $this->device->write(EscPos::CTL_ESC . "M" . chr($font));
     }
 
     /**
@@ -118,7 +118,7 @@ class Printer
      */
     function setJustification($justification)
     {
-        $this->device->write(EscPos::ESC . "a" . chr($justification));
+        $this->device->write(EscPos::CTL_ESC . "a" . chr($justification));
     }
 
     /**
@@ -128,7 +128,7 @@ class Printer
      */
     function feedReverse($lines = 1)
     {
-        $this->device->write(EscPos::ESC . "e" . chr($lines));
+        $this->device->write(EscPos::CTL_ESC . "e" . chr($lines));
     }
 
     /**
@@ -137,9 +137,9 @@ class Printer
      * @param int $mode Cut mode, either CUT_FULL or CUT_PARTIAL
      * @param int $lines Number of lines to feed
      */
-    function cut($mode = EscPos::CUT_FULL, $lines = 3)
+    function cut($mode = EscPos::PAPER_CUT_FULL, $lines = 3)
     {
-        $this->device->write(EscPos::GS . "V" . chr($mode) . chr($lines));
+        $this->device->write(EscPos::CTL_GS . "V" . chr($mode) . chr($lines));
     }
 
     /**
@@ -149,7 +149,7 @@ class Printer
      */
     function setBarcodeHeight($height = 8)
     {
-        $this->device->write(EscPos::GS . "h" . chr($height));
+        $this->device->write(EscPos::CTL_GS . "h" . chr($height));
     }
 
     /**
@@ -160,7 +160,7 @@ class Printer
      */
     function barcode($content, $type = EscPos::BARCODE_CODE39)
     {
-        $this->device->write(EscPos::GS . "k" . chr($type) . $content . EscPos::NUL);
+        $this->device->write(EscPos::CTL_GS . "k" . chr($type) . $content . EscPos::NUL);
     }
 
 }
