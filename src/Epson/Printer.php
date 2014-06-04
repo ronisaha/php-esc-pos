@@ -104,6 +104,21 @@ class Printer
     }
 
     /**
+     * Turn double size
+     *
+     * @param boolean $on true for double size, false for normal
+     *
+     * @return $this
+     */
+    function setDoubleSize($on = true)
+    {
+
+        $size = $on ? chr(EscPos::MODE_DOUBLE_HEIGHT + EscPos::MODE_DOUBLE_WIDTH) : chr(0);
+
+        return $this->send(EscPos::CTL_ESC . chr(33) . $size);
+    }
+
+    /**
      * Turn double-strike mode on/off
      *
      * @param boolean $on true for double strike, false for no double strike
