@@ -13,8 +13,10 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.3.0",
-        "hyperthese/php-serial": "dev-master"
+        "php": ">=5.3.0"
+    },
+    "suggest": {
+        "hyperthese/php-serial": "Allows Communicate with devices connected overSerial port"
     },
     "autoload": {
         "psr-0": {

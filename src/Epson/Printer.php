@@ -33,16 +33,20 @@ class Printer
      * Add text to the buffer
      *
      * @param string $str Text to print
+     *
+     * @return $this
      */
     function text($str = "")
     {
-        $this->device->write($str);
+        return $this->send($str);
     }
 
     /**
      * Print and feed line / Print and feed n lines
      *
      * @param int $lines Number of lines to feed
+     *
+     * @return $this
      */
     function feed($lines = 1)
     {
@@ -51,6 +55,8 @@ class Printer
         } else {
             $this->device->write(EscPos::CTL_ESC . "d" . chr($lines));
         }
+
+        return $this;
     }
 
     /**
@@ -65,40 +71,48 @@ class Printer
      * MODE_UNDERLINE
      *
      * @param int|string $mode
+     *
+     * @return $this
      */
     function setPrintMode($mode = EscPos::NUL)
     {
-        $this->device->write(EscPos::CTL_ESC . "!" . chr($mode));
+        return $this->send(EscPos::CTL_ESC . "!" . chr($mode));
     }
 
     /**
      * Turn underline mode on/off
      *
      * @param int $underline 0 for no underline, 1 for underline, 2 for heavy underline
+     *
+     * @return $this
      */
     function setUnderline($underline = 1)
     {
-        $this->device->write(EscPos::CTL_ESC . "-" . chr($underline));
+        return $this->send(EscPos::CTL_ESC . "-" . chr($underline));
     }
 
     /**
      * Turn emphasized mode on/off
      *
      * @param boolean $on true for emphasis, false for no emphasis
+     *
+     * @return $this
      */
     function setEmphasis($on = true)
     {
-        $this->device->write(EscPos::CTL_ESC . "E" . ($on ? chr(1) : chr(0)));
+        return $this->send(EscPos::CTL_ESC . "E" . ($on ? chr(1) : chr(0)));
     }
 
     /**
      * Turn double-strike mode on/off
      *
      * @param boolean $on true for double strike, false for no double strike
+     *
+     * @return $this
      */
     function setDoubleStrike($on)
     {
-        $this->device->write(EscPos::CTL_ESC . "G" . ($on ? chr(1) : chr(0)));
+        return $this->send(EscPos::CTL_ESC . "G" . ($on ? chr(1) : chr(0)));
     }
 
     /**
@@ -106,10 +120,12 @@ class Printer
      * Font must be FONT_A, FONT_B, or FONT_C.
      *
      * @param int $font
+     *
+     * @return $this
      */
     function setFont($font)
     {
-        $this->device->write(EscPos::CTL_ESC . "M" . chr($font));
+        return $this->send(EscPos::CTL_ESC . "M" . chr($font));
     }
 
     /**
@@ -118,49 +134,86 @@ class Printer
      */
     function setJustification($justification)
     {
-        $this->device->write(EscPos::CTL_ESC . "a" . chr($justification));
+        return $this->send(EscPos::CTL_ESC . "a" . chr($justification));
     }
 
     /**
      * Print and reverse feed n lines
      *
      * @param int $lines number of lines to feed
+     *
+     * @return $this
      */
     function feedReverse($lines = 1)
     {
-        $this->device->write(EscPos::CTL_ESC . "e" . chr($lines));
+        return $this->send(EscPos::CTL_ESC . "e" . chr($lines));
     }
 
     /**
      * Cut the paper
      *
-     * @param int $mode Cut mode, either CUT_FULL or CUT_PARTIAL
+     * @param int $mode  Cut mode, either CUT_FULL or CUT_PARTIAL
      * @param int $lines Number of lines to feed
+     *
+     * @return $this
      */
     function cut($mode = EscPos::PAPER_CUT_FULL, $lines = 3)
     {
-        $this->device->write(EscPos::CTL_GS . "V" . chr($mode) . chr($lines));
+        return $this->send(EscPos::CTL_GS . "V" . chr($mode) . chr($lines));
     }
 
     /**
      * Set barcode height
      *
-     * @param int $height Height in dots
+     * @param int $height Height in dots [1-255]
+     *
+     * @return $this
      */
-    function setBarcodeHeight($height = 8)
+    function setBarcodeHeight($height = 162)
     {
-        $this->device->write(EscPos::CTL_GS . "h" . chr($height));
+        return $this->send(EscPos::CTL_GS . "h" . chr($height));
+    }
+
+
+    /**
+     * Set barcode width
+     *
+     * @param int $width Widht [1-4]
+     *
+     * @return $this
+     */
+    function setBarcodeWidth($width = 3)
+    {
+        return $this->send(EscPos::CTL_GS . 'w' . chr($width));
     }
 
     /**
      * Print a barcode
      *
      * @param string $content
-     * @param int $type
+     * @param int    $type
+     *
+     * @return $this
      */
     function barcode($content, $type = EscPos::BARCODE_CODE39)
     {
-        $this->device->write(EscPos::CTL_GS . "k" . chr($type) . $content . EscPos::NUL);
+        return $this->send(EscPos::CTL_GS . "k" . chr($type) . $content . EscPos::NUL);
     }
 
+    public function setBarcodeTextPosition($mode = EscPos::BARCODE_TXT_BELOW)
+    {
+        return $this->send(EscPos::CTL_GS . 'H' . chr($mode));
+    }
+
+    public function setBarcodeFont($font = EscPos::BARCODE_FONT_A)
+    {
+        return $this->send(EscPos::CTL_GS . 'f' . chr($font));
+    }
+
+    protected function send($data)
+    {
+        $this->device->write($data);
+
+        return $this;
+    }
 }

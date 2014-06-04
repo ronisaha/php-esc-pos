@@ -52,4 +52,14 @@ class EscPos
     const BARCODE_CODE39 = 4;
     const BARCODE_ITF = 5;
     const BARCODE_NW7 = 6;
-} 
+
+    # Barcode format
+    const BARCODE_TXT_OFF = 0; # HRI barcode chars OFF
+    const BARCODE_TXT_ABOVE = 1; # HRI barcode chars above
+    const BARCODE_TXT_BELOW = 2; # HRI barcode chars below
+    const BARCODE_TXT_BOTH = 3; # HRI barcode chars both above and below
+    const BARCODE_FONT_A = 0; # Font type A for HRI barcode chars
+    const BARCODE_FONT_B = 1; # Font type B for HRI barcode chars
+    const BARCODE_HEIGHT = 104; # Barcode Height [1-255]
+    const BARCODE_WIDTH = 3; # Barcode Width  [2-6]
+}

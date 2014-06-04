@@ -13,7 +13,7 @@
 
 namespace Epson\Devices;
 
-class NetworkPrinter extends  FileSystem
+class Network extends  FileSystem
 {
     public function __construct($host, $port = 9100, $timeout = 30)
     {
