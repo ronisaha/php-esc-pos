@@ -36,7 +36,7 @@ class Printer
      *
      * @return $this
      */
-    function text($str = "")
+    public function text($str = "")
     {
         return $this->send($str);
     }
@@ -48,7 +48,7 @@ class Printer
      *
      * @return $this
      */
-    function feed($lines = 1)
+    public function feed($lines = 1)
     {
         if ($lines <= 1) {
             $this->device->write(EscPos::CTL_LF);
@@ -74,7 +74,7 @@ class Printer
      *
      * @return $this
      */
-    function setPrintMode($mode = EscPos::NUL)
+    public function setPrintMode($mode = EscPos::NUL)
     {
         return $this->send(EscPos::CTL_ESC . "!" . chr($mode));
     }
@@ -86,7 +86,7 @@ class Printer
      *
      * @return $this
      */
-    function setUnderline($underline = 1)
+    public function setUnderline($underline = 1)
     {
         return $this->send(EscPos::CTL_ESC . "-" . chr($underline));
     }
@@ -98,7 +98,7 @@ class Printer
      *
      * @return $this
      */
-    function setEmphasis($on = true)
+    public function setEmphasis($on = true)
     {
         return $this->send(EscPos::CTL_ESC . "E" . ($on ? chr(1) : chr(0)));
     }
@@ -110,7 +110,7 @@ class Printer
      *
      * @return $this
      */
-    function setDoubleSize($on = true)
+    public function setDoubleSize($on = true)
     {
 
         $size = $on ? chr(EscPos::MODE_DOUBLE_HEIGHT + EscPos::MODE_DOUBLE_WIDTH) : chr(0);
@@ -125,7 +125,7 @@ class Printer
      *
      * @return $this
      */
-    function setDoubleStrike($on)
+    public function setDoubleStrike($on)
     {
         return $this->send(EscPos::CTL_ESC . "G" . ($on ? chr(1) : chr(0)));
     }
@@ -138,7 +138,7 @@ class Printer
      *
      * @return $this
      */
-    function setFont($font)
+    public function setFont($font)
     {
         return $this->send(EscPos::CTL_ESC . "M" . chr($font));
     }
@@ -147,7 +147,7 @@ class Printer
      * Select justification
      * Justification must be JUSTIFY_LEFT, JUSTIFY_CENTER, or JUSTIFY_RIGHT.
      */
-    function setJustification($justification)
+    public function setJustification($justification)
     {
         return $this->send(EscPos::CTL_ESC . "a" . chr($justification));
     }
@@ -159,7 +159,7 @@ class Printer
      *
      * @return $this
      */
-    function feedReverse($lines = 1)
+    public function feedReverse($lines = 1)
     {
         return $this->send(EscPos::CTL_ESC . "e" . chr($lines));
     }
@@ -172,7 +172,7 @@ class Printer
      *
      * @return $this
      */
-    function cut($mode = EscPos::PAPER_CUT_FULL, $lines = 3)
+    public function cut($mode = EscPos::PAPER_CUT_FULL, $lines = 3)
     {
         return $this->send(EscPos::CTL_GS . "V" . chr($mode) . chr($lines));
     }
@@ -184,7 +184,7 @@ class Printer
      *
      * @return $this
      */
-    function setBarcodeHeight($height = 162)
+    public function setBarcodeHeight($height = 162)
     {
         return $this->send(EscPos::CTL_GS . "h" . chr($height));
     }
@@ -197,9 +197,33 @@ class Printer
      *
      * @return $this
      */
-    function setBarcodeWidth($width = 3)
+    public function setBarcodeWidth($width = 3)
     {
         return $this->send(EscPos::CTL_GS . 'w' . chr($width));
+    }
+
+    /**
+     * St barcode text position
+     *
+     * @param int $mode
+     *
+     * @return $this
+     */
+    public function setBarcodeTextPosition($mode = EscPos::BARCODE_TXT_BELOW)
+    {
+        return $this->send(EscPos::CTL_GS . 'H' . chr($mode));
+    }
+
+    /**
+     * Set barcode font
+     *
+     * @param int $font
+     *
+     * @return $this
+     */
+    public function setBarcodeFont($font = EscPos::BARCODE_FONT_A)
+    {
+        return $this->send(EscPos::CTL_GS . 'f' . chr($font));
     }
 
     /**
@@ -210,19 +234,53 @@ class Printer
      *
      * @return $this
      */
-    function barcode($content, $type = EscPos::BARCODE_CODE39)
+    public function barcode($content, $type = EscPos::BARCODE_CODE39)
     {
         return $this->send(EscPos::CTL_GS . "k" . chr($type) . $content . EscPos::NUL);
     }
 
-    public function setBarcodeTextPosition($mode = EscPos::BARCODE_TXT_BELOW)
+    public function image($resource, $width = null, $height = null)
     {
-        return $this->send(EscPos::CTL_GS . 'H' . chr($mode));
+        $img = \Intervention\Image\ImageManagerStatic::make($resource);
+
+        if ($width != null && $height != null) {
+            $img->fit($width, $height);
+        } elseif ($width != null || $height != null) {
+            $img->resize($width, $height, function ($constraint) {
+
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+        }
+
+        $this->send('\x1d\x76\x30\x00');
+        $this->send(chr(($width/$height)/8));
+        $this->send(chr(0));
+        $this->send(chr($height));
+        $im = $img->greyscale()->getCore();
+        $this->send($this->getImageRawData($im));
+
+
     }
 
-    public function setBarcodeFont($font = EscPos::BARCODE_FONT_A)
+    protected function getImageRawData($im)
     {
-        return $this->send(EscPos::CTL_GS . 'f' . chr($font));
+        if (!($total=imagecolorstotal($im))) {
+            $total = 256;
+            imagetruecolortopalette($im, 1, $total);
+        }
+
+        $data = "";
+
+        for($i=0; $i<$total; $i++){
+            $old=ImageColorsForIndex($im,$i);
+
+            $commongrey=(int)($old['red']+$old['green']+$old['blue'])/3;
+
+            $data .= chr($commongrey);
+        }
+
+        return $data;
     }
 
     protected function send($data)
