@@ -241,6 +241,8 @@ class Printer
 
     public function image($resource, $width = null, $height = null)
     {
+        throw new \Exception('Not implemented');
+
         $img = \Intervention\Image\ImageManagerStatic::make($resource);
 
         if ($width != null && $height != null) {
@@ -253,11 +255,18 @@ class Printer
             });
         }
 
-        $this->send('\x1d\x76\x30\x00');
-        $this->send(chr(($width/$height)/8));
+        $w = $img->width();
+        $h = $img->height();
+
+
+        $this->send(EscPos::CTL_GS);
+        $this->send('v');
+        $this->send(chr(48));
+        $this->send(chr(0));
+        $this->send(4);
         $this->send(chr(0));
         $this->send(chr($height));
-        $im = $img->greyscale()->getCore();
+        $im = $img->getCore();
         $this->send($this->getImageRawData($im));
 
 
@@ -265,20 +274,23 @@ class Printer
 
     protected function getImageRawData($im)
     {
-        if (!($total=imagecolorstotal($im))) {
-            $total = 256;
-            imagetruecolortopalette($im, 1, $total);
-        }
 
         $data = "";
 
-        for($i=0; $i<$total; $i++){
-            $old=ImageColorsForIndex($im,$i);
+        $w = imagesx($im); // image width
+        $h = imagesy($im); // image height
+        for($x = 0; $x < $h; $x++) {
+            for($y = 0; $y < $w; $y++) {
+                $rgb = imagecolorat($im, $y, $x);
+                $r = ($rgb >> 16) & 0xFF;
+                $g = ($rgb >> 8) & 0xFF;
+                $b = $rgb & 0xFF;
+                $gray = (int)(($r + $g + $b) / 3);
 
-            $commongrey=(int)($old['red']+$old['green']+$old['blue'])/3;
-
-            $data .= chr($commongrey);
+                $data .= chr($gray);
+            }
         }
+
 
         return $data;
     }
