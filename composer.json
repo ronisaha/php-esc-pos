@@ -1,7 +1,7 @@
 {
     "name": "xiidea/php-esc-pos",
     "type": "library",
-    "homepage": "https://github.com/xiidea/php-esc-pos/",
+    "homepage": "https://github.com/ronisaha/php-esc-pos/",
     "description": "EPSON ESC/POS printer command generator library",
     "keywords": ["ESC-POS", "Thermal printer", "TM-T70", "Epson"],
     "license": "MIT",
