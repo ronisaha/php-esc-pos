@@ -69,4 +69,40 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->object, $this->object->feed(5));
 	}
+
+	/**
+	 * @test
+	 */
+	public function testSetPrintModeDefault()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "!" . chr(EscPos::NUL)));
+
+		$this->assertEquals($this->object, $this->object->setPrintMode());
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetPrintModeWithParam()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "!" . chr(EscPos::MODE_FONT_A)));
+
+		$this->assertEquals($this->object, $this->object->setPrintMode(EscPos::MODE_FONT_A));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetUnderline()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "-" . chr(0)));
+
+		$this->assertEquals($this->object, $this->object->setUnderline(0));
+	}
 }
