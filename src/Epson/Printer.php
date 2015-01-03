@@ -142,7 +142,7 @@ class Printer
      *
      * @return $this
      */
-    public function setDoubleStrike($on)
+    public function setDoubleStrike($on = true)
     {
         return $this->send(EscPos::CTL_ESC . "G" . ($on ? chr(1) : chr(0)));
     }

@@ -105,4 +105,76 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->object, $this->object->setUnderline(0));
 	}
+
+	/**
+	 * @test
+	 */
+	public function testSetEmphasisOn()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "E" . chr(1)));
+
+		$this->assertEquals($this->object, $this->object->setEmphasis());
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetEmphasisOff()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "E" . chr(0)));
+
+		$this->assertEquals($this->object, $this->object->setEmphasis(false));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetDoubleSizeOn()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . chr(33) . chr(EscPos::MODE_DOUBLE_HEIGHT + EscPos::MODE_DOUBLE_WIDTH) ));
+
+		$this->assertEquals($this->object, $this->object->setDoubleSize());
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetDoubleSizeOff()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . chr(33) . chr(0) ));
+
+		$this->assertEquals($this->object, $this->object->setDoubleSize(false));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetDoubleStrikeOn()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "G" . chr(1)));
+
+		$this->assertEquals($this->object, $this->object->setDoubleStrike());
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetDoubleStrikeOff()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "G" . chr(0)));
+
+		$this->assertEquals($this->object, $this->object->setDoubleStrike(false));
+	}
 }
