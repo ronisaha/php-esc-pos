@@ -258,8 +258,6 @@ class Printer
 
     public function image($resource, $width = null, $height = null)
     {
-        throw new \Exception('Not implemented');
-
         $img = \Intervention\Image\ImageManagerStatic::make($resource);
 
         if ($width != null && $height != null) {
@@ -272,9 +270,8 @@ class Printer
             });
         }
 
-        $w = $img->width();
+        //$w = $img->width();
         $h = $img->height();
-
 
         $this->send(EscPos::CTL_GS);
         $this->send('v');
@@ -282,11 +279,10 @@ class Printer
         $this->send(chr(0));
         $this->send(4);
         $this->send(chr(0));
-        $this->send(chr($height));
+        $this->send(chr($h));
         $im = $img->getCore();
-        $this->send($this->getImageRawData($im));
 
-
+        return $this->send($this->getImageRawData($im));
     }
 
     protected function getImageRawData($im)

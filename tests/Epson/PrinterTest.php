@@ -20,6 +20,16 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
 	 */
 	private $device;
 
+	/**
+	 * @var \PHPUnit_Framework_MockObject_MockObject
+	 */
+	private $imageManager;
+
+	/**
+	 * @var \PHPUnit_Framework_MockObject_MockObject
+	 */
+	private $image;
+
 	protected function setUp()
 	{
 		parent::setUp();
@@ -30,6 +40,12 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
 		$this->object = new Printer(
 			$this->device
 		);
+
+		$this->imageManager = $this->getMockBuilder('\Intervention\Image\ImageManager')
+			->getMock();
+
+		$this->image = $this->getMockBuilder('\Intervention\Image\Image')
+			->getMock();
 	}
 
 	/**
@@ -286,13 +302,95 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($this->object, $this->object->barcode('test', EscPos::BARCODE_CODE39));
 	}
 
+//	/**
+//	 * @test
+//	 */
+//	public function testImage()
+//	{
+//		$this->imageManager->expects($this->once())
+//			->method('make')
+//			->willReturn($this->image);
+//
+//		new \Intervention\Image\ImageManagerStatic($this->imageManager);
+//
+//		$this->object->image('R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs='); //1x1px black
+//	}
+
 	/**
 	 * @test
+	 *
+	 * TODO: Improve this test
 	 */
-	public function testImage()
+	public function testImageWithDefaults()
 	{
-		$this->setExpectedException('\Exception');
+		//$this->object->image('R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=');
+		$sequence = $this->getImageWriteOutput(1, chr(0));
+		for($i = 0; $i < count($sequence); $i++) {
+			$this->device->expects($this->at($i))
+				->method('write')
+				->with(
+					$this->equalTo($sequence[$i])
+				);
+		}
 
-		$this->object->image(null);
+		$this->assertEquals(
+			$this->object, $this->object->image('R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=') //1x1px black
+		);
+	}
+
+	/**
+	 * @test
+	 *
+	 * TODO: Improve this test
+	 */
+	public function testImageWithResizeWithSameRatio()
+	{
+		$sequence = $this->getImageWriteOutput(1, chr(4));
+		for($i = 0; $i < count($sequence); $i++) {
+			$this->device->expects($this->at($i))
+				->method('write')
+				->with(
+					$this->equalTo($sequence[$i])
+				);
+		}
+
+		$this->assertEquals(
+			$this->object, $this->object->image('R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=', 1, 1) //1x1px black
+		);
+	}
+
+	/**
+	 * @test
+	 *
+	 * TODO: Improve this test
+	 */
+	public function testImageWithResizeWidthOnly()
+	{
+		$sequence = $this->getImageWriteOutput(1, chr(4));
+		for($i = 0; $i < count($sequence); $i++) {
+			$this->device->expects($this->at($i))
+				->method('write')
+				->with(
+					$this->equalTo($sequence[$i])
+				);
+		}
+
+		$this->assertEquals(
+			$this->object, $this->object->image('R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=', 1) //1x1px black
+		);
+	}
+
+	private function getImageWriteOutput($height, $rawData)
+	{
+		return array(
+			EscPos::CTL_GS,
+			'v',
+			chr(48),
+			chr(0),
+			4,
+			chr(0),
+			chr($height),
+			$rawData
+		);
 	}
 }
