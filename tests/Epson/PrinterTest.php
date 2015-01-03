@@ -27,8 +27,6 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
 		$this->device = $this->getMockBuilder('\Epson\Devices\Device')
 			->getMockForAbstractClass();
 
-		//$this->device->expects($this->once())->method('initialize');
-
 		$this->object = new Printer(
 			$this->device
 		);
@@ -176,5 +174,125 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
 			->with($this->equalTo(EscPos::CTL_ESC . "G" . chr(0)));
 
 		$this->assertEquals($this->object, $this->object->setDoubleStrike(false));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetFont()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "M" . chr(EscPos::FONT_A)));
+
+		$this->assertEquals($this->object, $this->object->setFont(EscPos::FONT_A));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetJustification()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "a" . chr(EscPos::JUSTIFY_CENTER)));
+
+		$this->assertEquals($this->object, $this->object->setJustification(EscPos::JUSTIFY_CENTER));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testFeedReverse()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_ESC . "e" . chr(2)));
+
+		$this->assertEquals($this->object, $this->object->feedReverse(2));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testCut()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_GS . "V" . chr(EscPos::PAPER_CUT_FULL) . chr(3)));
+
+		$this->assertEquals($this->object, $this->object->cut(EscPos::PAPER_CUT_FULL, 3));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetBarcodeHeight()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_GS . "h" . chr(128)));
+
+		$this->assertEquals($this->object, $this->object->setBarcodeHeight(128));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetBarcodeWidth()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_GS . "w" . chr(128)));
+
+		$this->assertEquals($this->object, $this->object->setBarcodeWidth(128));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetBarcodeTextPosition()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_GS . 'H' . chr(EscPos::BARCODE_TXT_BELOW)));
+
+		$this->assertEquals($this->object, $this->object->setBarcodeTextPosition(EscPos::BARCODE_TXT_BELOW));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testSetBarcodeFont()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with($this->equalTo(EscPos::CTL_GS . 'f' . chr(EscPos::BARCODE_FONT_A)));
+
+		$this->assertEquals($this->object, $this->object->setBarcodeFont(EscPos::BARCODE_FONT_A));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testBarcode()
+	{
+		$this->device->expects($this->once())
+			->method('write')
+			->with(
+				$this->equalTo(EscPos::CTL_GS . "k" . chr(EscPos::BARCODE_CODE39) . 'test' . EscPos::NUL)
+			);
+
+		$this->assertEquals($this->object, $this->object->barcode('test', EscPos::BARCODE_CODE39));
+	}
+
+	/**
+	 * @test
+	 */
+	public function testImage()
+	{
+		$this->setExpectedException('\Exception');
+
+		$this->object->image(null);
 	}
 }
