@@ -10,7 +10,8 @@ Basic usage
 
 ```php
 <?php
-$device = new \Epson\Devices\NetworkPrinter('"10.x.x.x"');
+//$device = new \Epson\Devices\NetworkPrinter('"10.x.x.x"');
+$device = \Epson\Devices\Serial::create('/dev/tty0');
 $printer = new \Epson\Printer($device);
 $printer -> text("Hello World!\n");
 $printer -> cut();
