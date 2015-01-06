@@ -6,14 +6,14 @@
 namespace Epson\Wrappers;
 
 /**
- * Class FileSystemWrapper
+ * Class SystemCallWrapper
  * @package Epson\Wrappers
  *
  * @codeCoverageIgnore
  *
  * Maybe use https://github.com/mikey179/vfsStream instead!
  */
-class FileSystemWrapper
+class SystemCallWrapper
 {
 	/**
 	 * @var resource
@@ -21,7 +21,17 @@ class FileSystemWrapper
 	private $resource;
 
 	/**
-	 * @return FileSystemWrapper
+	 * @var int
+	 */
+	private $errorNo  = 0;
+
+	/**
+	 * @var string
+	 */
+	private $errorMsg = '';
+
+	/**
+	 * @return SystemCallWrapper
 	 */
 	public static function create()
 	{
@@ -51,7 +61,19 @@ class FileSystemWrapper
 	}
 
 	/**
-	 * Write data to file
+	 * Open a socket
+	 *
+	 * @param string $host
+	 * @param string $port
+	 * @param int    $timeout Default: 30
+	 */
+	public function sockOpen($host, $port, $timeout = 30)
+	{
+		$this->resource = fsockopen($host, $port, $this->errorNo, $this->errorMsg, $timeout);
+	}
+
+	/**
+	 * Write data
 	 *
 	 * @param string $data
 	 */
@@ -61,10 +83,25 @@ class FileSystemWrapper
 	}
 
 	/**
-	 * Close file
+	 * Close
 	 */
 	public function close()
 	{
 		fclose($this->resource);
+	}
+
+	public function hasError()
+	{
+		return $this->errorNo > 0;
+	}
+
+	public function getErrorNo()
+	{
+		return $this->errorNo;
+	}
+
+	public function getErrorMsg()
+	{
+		return $this->errorMsg;
 	}
 }

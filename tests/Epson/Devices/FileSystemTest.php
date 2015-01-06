@@ -28,7 +28,7 @@ class FileSystemTest extends \PHPUnit_Framework_TestCase
 	{
 		parent::setUp();
 
-		$this->fsWrapper = $this->getMockBuilder('\Epson\Wrappers\FileSystemWrapper')->getMock();
+		$this->fsWrapper = $this->getMockBuilder('\Epson\Wrappers\SystemCallWrapper')->getMock();
 
 		$this->fsWrapper->expects($this->once())
 			->method('is_writeable')
@@ -55,7 +55,7 @@ class FileSystemTest extends \PHPUnit_Framework_TestCase
 	public function testCreateWithNonWriteable() //Actually it's a constructor test
 	{
 		//Overwrite the original $fsWrapper!s return value
-		$fsWrapper = $this->getMockBuilder('\Epson\Wrappers\FileSystemWrapper')->getMock();
+		$fsWrapper = $this->getMockBuilder('\Epson\Wrappers\SystemCallWrapper')->getMock();
 
 		$fsWrapper->expects($this->once())
 			->method('is_writeable')
@@ -72,7 +72,7 @@ class FileSystemTest extends \PHPUnit_Framework_TestCase
 	public function testCreate() //Actually it's a constructor test too
 	{
 		//Overwrite the original $fsWrapper!s return value
-		$fsWrapper = $this->getMockBuilder('\Epson\Wrappers\FileSystemWrapper')->getMock();
+		$fsWrapper = $this->getMockBuilder('\Epson\Wrappers\SystemCallWrapper')->getMock();
 
 		$fsWrapper->expects($this->once())
 			->method('is_writeable')
