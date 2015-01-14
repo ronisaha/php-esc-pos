@@ -14,6 +14,7 @@ use Epson\Devices\FileSystem;
 class FileSystemTest extends \PHPUnit_Framework_TestCase
 {
 	const TEST_PATH = 'testPath';
+
 	/**
 	 * @var \Epson\Devices\FileSystem
 	 */
