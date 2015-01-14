@@ -13,26 +13,41 @@
 
 namespace Epson\Devices;
 
+use Epson\Wrappers\SystemCallWrapper;
+
 class FileSystem extends  Device
 {
-    protected $resource;
+    //protected $resource;
+    /**
+     * @var \Epson\Wrappers\SystemCallWrapper
+     */
+    protected $sysCallWrapper;
 
-    public function __construct($path = "php://stdout")
+    public static function create($path = "php://stdout")
     {
-        if(empty($path) || !is_writable($path)) {
+        return new self(
+            SystemCallWrapper::create(),
+            $path
+        );
+    }
+
+    public function __construct(SystemCallWrapper $fsWrapper, $path)
+    {
+        if(empty($path) || !$fsWrapper->is_writeable($path)) {
             throw new \Exception('Resource is not writable', 0);
         }
+        $fsWrapper->open($path, 'wb');
 
-        $this->resource = fopen($path, "wb");
+        $this->sysCallWrapper = $fsWrapper;
     }
 
     function close()
     {
-        fclose($this->resource);
+        $this->sysCallWrapper->close();
     }
 
     function write($data)
     {
-        fwrite($this->resource, $data);
+        $this->sysCallWrapper->write($data);
     }
 }

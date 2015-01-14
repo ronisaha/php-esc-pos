@@ -10,7 +10,8 @@ Basic usage
 
 ```php
 <?php
-$device = new \Epson\Devices\NetworkPrinter('"10.x.x.x"');
+//$device = new \Epson\Devices\NetworkPrinter('10.x.x.x');
+$device = \Epson\Devices\Serial::create('/dev/tty0');
 $printer = new \Epson\Printer($device);
 $printer -> text("Hello World!\n");
 $printer -> cut();
@@ -20,6 +21,12 @@ $printer -> cut();
 Attribution
 -----------
 This library is a modified version of escpos-php, a Library to work with ESC/POS thermal printers, implemented by Michael Billington. Further documentation is available at [https://github.com/mike42/escpos-php](https://github.com/mike42/escpos-php).
+
+Unit testing
+------------
+After the composer install in the same folder:
+
+`./vendor/bin/phpunit`
 
 Reference
 ==========

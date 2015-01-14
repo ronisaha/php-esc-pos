@@ -17,10 +17,31 @@ class Serial extends Device
 {
     protected $resource;
 
-    public function __construct($devfile = "/dev/ttyS0", $baudRate = 9600, $byteSize = 8, $parity = 'none')
+    /**
+     * @param string $devfile
+     * @param int $baudRate
+     * @param int $byteSize
+     * @param string $parity
+     *
+     * @return Serial
+     *
+     * @codeCoverageIgnore
+     */
+    public static function create($devfile = "/dev/ttyS0", $baudRate = 9600, $byteSize = 8, $parity = 'none')
     {
-        $this->resource = new \PhpSerial();
+        return new self(
+            new \PhpSerial(),
+            $devfile,
+            $baudRate,
+            $byteSize,
+            $parity
+        );
+    }
 
+    public function __construct(\PhpSerial $phpSerial, $devfile, $baudRate, $byteSize, $parity)
+    {
+        $this->resource = $phpSerial;
+        $this->resource->deviceSet($devfile);
         $this->resource->confBaudRate($baudRate);
         $this->resource->confCharacterLength($byteSize);
         $this->resource->confParity($parity);
