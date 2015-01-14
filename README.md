@@ -22,6 +22,12 @@ Attribution
 -----------
 This library is a modified version of escpos-php, a Library to work with ESC/POS thermal printers, implemented by Michael Billington. Further documentation is available at [https://github.com/mike42/escpos-php](https://github.com/mike42/escpos-php).
 
+Unit testing
+------------
+After the composer install in the same folder:
+
+`./vendor/bin/phpunit`
+
 Reference
 ==========
 
