@@ -70,6 +70,15 @@ class EscPos
     const BARCODE_CODE39 = 4;
     const BARCODE_ITF = 5;
     const BARCODE_NW7 = 6;
+    const BARCODE2_UPCA = 65;
+    const BARCODE2_UPCE = 66;
+    const BARCODE2_JAN13 = 67;
+    const BARCODE2_JAN8 = 68;
+    const BARCODE2_CODE39 = 69;
+    const BARCODE2_ITF = 70;
+    const BARCODE2_NW7 = 71;
+    const BARCODE2_CODE93 = 72;
+    const BARCODE2_CODE128 = 73;
 
     # Barcode format
     const BARCODE_TXT_OFF = 0; # HRI barcode chars OFF
