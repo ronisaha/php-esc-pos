@@ -253,7 +253,11 @@ class Printer
      */
     public function barcode($content, $type = EscPos::BARCODE_CODE39)
     {
-        return $this->send(EscPos::CTL_GS . "k" . chr($type) . $content . EscPos::NUL);
+        if($type >= 0 && $type <= 6 ){
+            return $this->send(EscPos::CTL_GS . "k" . chr($type) . $content . EscPos::NUL);
+        }else if($type >= 65 && $type <= 73 ){
+            return $this->send(EscPos::CTL_GS . "k" . chr($type) . chr(strlen($content)) . $content);
+        }
     }
 
     public function image($resource, $width = null, $height = null)
