@@ -1,6 +1,9 @@
 ESC/POS command SDK in PHP
 ==========================
 
+**Note:** This library is no longer being maintained. I'm not responding to issues or pull requests, since I don't use this project anymore and don't have time to work on it. Please feel free to fork it if you want to continue development on it. Or you can use [this](https://github.com/mike42/escpos-php) library instead.
+
+
 This library implements a subset of Epson's ESC/POS protocol for thermal receipt printers. It allows you to print receipts with basic formatting, cutting, and barcode printing on a compatible printer.
 
 It is intended for **Epson TM-T70** model, But other printers, produced by Epson or other vendors use the same standard, may also work.
